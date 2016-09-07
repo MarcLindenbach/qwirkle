@@ -56,4 +56,37 @@ class GameBoardTest(TestCase):
         self.assertEqual(4, len(board._board))
         self.assertEqual(3, len(board._board[0]))
         self.assertEqual(piece, board._board[2][1])
-        
+
+    def test_playing_peices_and_expanding_board(self):
+        board = GameBoard()
+        piece = Piece()
+        board.play(piece)
+        board.play(piece, x=1, y=2)
+        board.play(piece, x=1, y=3)
+        board.play(piece, x=1, y=4)
+        board.play(piece, x=2, y=2)
+        board.play(piece, x=3, y=2)
+        board.play(piece, x=4, y=2)
+        board.play(piece, x=0, y=2)
+        board.play(piece, x=0, y=2)
+        board.play(piece, x=0, y=2)
+        board.play(piece, x=1, y=1)
+        board.play(piece, x=1, y=0)
+        board.play(piece, x=1, y=0)
+        board.play(piece, x=1, y=0)
+
+        expected_board = [
+            [None, None, None, None, None, None, None, None, None, ],
+            [None, piece, None, None, None, None, None, None, None, ],
+            [None, piece, None, None, None, None, None, None, None, ],
+            [None, piece, None, None, None, None, None, None, None, ],
+            [None, piece, None, None, piece, None, None, None, None, ],
+            [None, piece, piece, piece, piece, piece, piece, piece, None, ],
+            [None, None, None, None, piece, None, None, None, None, ],
+            [None, None, None, None, piece, None, None, None, None, ],
+            [None, None, None, None, None, None, None, None, None, ],
+        ]
+
+        self.assertEqual(expected_board, board._board)
+
+        board._print_board()

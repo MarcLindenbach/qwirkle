@@ -1,3 +1,5 @@
+from termcolor 
+
 class GameBoard:
 
     def __init__(self):
@@ -18,12 +20,12 @@ class GameBoard:
 
         # Check for top padding
         if any(self._board[0][i] is not None for i in range(len(self._board[0]))):
-            self._board.insert(0, [None] * len(self._board))
+            self._board.insert(0, [None] * (len(self._board[0])))
 
         # Check for bottom padding
         bottom = len(self._board) - 1
         if any(self._board[bottom][i] is not None for i in range(len(self._board[0]))):
-            self._board += [[None] * len(self._board)]
+            self._board += [[None] * (len(self._board[0]))]
 
         # Left padding
         if any(self._board[i][0] is not None for i in range(len(self._board))):
@@ -35,3 +37,10 @@ class GameBoard:
         if any(self._board[i][right] is not None for i in range(len(self._board))):
             for i in range(len(self._board)):
                 self._board[i] += [None]
+
+    def _print_board(self):
+        for y in range(len(self._board)):
+            line = ''
+            for x in range(len(self._board[y])):
+                line += '▉' if self._board[y][x] is not None else '░'
+            print(line)
