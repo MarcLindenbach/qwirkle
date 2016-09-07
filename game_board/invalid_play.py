@@ -1,0 +1,2 @@
+class InvalidPlayException(Exception):
+    pass

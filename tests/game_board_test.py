@@ -1,5 +1,5 @@
 from unittest import TestCase
-from game_board import GameBoard, Piece
+from game_board import GameBoard, Piece, COLORS, SHAPES, InvalidPlayException
 
 
 class GameBoardTest(TestCase):
@@ -57,9 +57,9 @@ class GameBoardTest(TestCase):
         self.assertEqual(3, len(board._board[0]))
         self.assertEqual(piece, board._board[2][1])
 
-    def test_playing_peices_and_expanding_board(self):
+    def test_playing_pieces_and_expanding_board(self):
         board = GameBoard()
-        piece = Piece()
+        piece = Piece(color=COLORS.RED, shape=SHAPES.SPARKLE)
         board.play(piece)
         board.play(piece, x=1, y=2)
         board.play(piece, x=1, y=3)
@@ -89,4 +89,10 @@ class GameBoardTest(TestCase):
 
         self.assertEqual(expected_board, board._board)
 
-        board._print_board()
+    def test_raises_placement_error_when_placing_on_edge_of_board(self):
+        board = GameBoard()
+        piece = Piece()
+        board.play(piece)
+
+        with self.assertRaises(InvalidPlayException):
+            board.play(piece, x=0, y=0)
