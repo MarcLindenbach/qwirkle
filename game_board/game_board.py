@@ -18,17 +18,16 @@ class GameBoard:
         self._board = self._saved_board.copy()
         self._plays = []
 
-    def play(self, piece, x=0, y=0):
+    def play(self, piece, x=1, y=1):
         """Play a tile"""
         if len(self._board) == 0:
             self._board = [[None] * 3 for i in range(3)]
-            self._board[1][1] = piece
-            return
 
         if not self._is_play_valid(piece, x, y):
             raise InvalidPlayException()
 
         self._board[y][x] = piece
+        self._plays.append((x,y))
         self._pad_board()
 
     def score(self):
@@ -38,14 +37,17 @@ class GameBoard:
     def end_turn(self):
         """End the current turn"""
         self._saved_board = self._board.copy()
+        self._plays = []
 
     def reset_turn(self):
         """Reset the board to the way it was at the beginning of the turn"""
         self._board = self._saved_board.copy()
+        self._plays = []
 
     def _is_play_valid(self, piece, x, y):
-        """Validates a move is within the board, not on the corners, not replacing a existing piece, adjacent to an
-           existing tile and valid in its row/column"""
+        """Validates a move is within the board, not on the corners, not
+           replacing a existing piece, adjacent to an existing tile and valid in
+           its row/column"""
         if x < 0 or x >= len(self._board[0]):
             return False
         if y < 0 or y >= len(self._board):
@@ -62,6 +64,7 @@ class GameBoard:
         if self._board[y][x] is not None:
             return False
 
+        # Get & Verify all the tiles adjacent horizontally
         row = [piece]
         t_x = x + 1
         while t_x < len(self._board[0]) and self._board[y][t_x] is not None:
@@ -76,6 +79,7 @@ class GameBoard:
         if not self._is_row_valid(row):
             return False
 
+        # Get & Verify all the tiles adjacent vertically
         row = [piece]
         t_y = y + 1
         while t_y < len(self._board) and self._board[t_y][x] is not None:
@@ -93,8 +97,10 @@ class GameBoard:
         return True
 
     def _is_row_valid(self, row):
-        """If all row colors are equal, check each shape shows up at most once. If all shapes are equal, check each
-           color shows up at most once. Otherwise the row is invalid."""
+        """If all row colors are equal, check each shape shows up at most once.
+           If all shapes are equal, check each color shows up at most once.
+           Otherwise the row is invalid."""
+
         if len(row) == 1:
             return True
 
@@ -118,11 +124,12 @@ class GameBoard:
         return True
 
     def _pad_board(self):
-        """Ensures there is a padding of empty spots around the board"""
+        """Ensures there is a padding of empty spots around the board, update the plays"""
 
         # Check for top padding
         if any(self._board[0][i] is not None for i in range(len(self._board[0]))):
             self._board.insert(0, [None] * (len(self._board[0])))
+            self._plays = [(play[0], play[1]+1) for play in self._plays]
 
         # Check for bottom padding
         bottom = len(self._board) - 1
@@ -133,6 +140,7 @@ class GameBoard:
         if any(self._board[i][0] is not None for i in range(len(self._board))):
             for i in range(len(self._board)):
                 self._board[i].insert(0, None)
+            self._plays = [(play[0] + 1, play[1]) for play in self._plays]
 
         # Right padding
         right = len(self._board[0]) - 1

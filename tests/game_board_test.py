@@ -61,7 +61,7 @@ class GameBoardTest(TestCase):
         self.assertEqual(3, len(board._board[0]))
         self.assertEqual(piece2, board._board[2][1])
 
-    def test_playing_pieces_and_expanding_board(self):
+    def test_playing_multiple_turns(self):
         board = GameBoard()
         piece1 = Piece(color=COLORS.RED, shape=SHAPES.SPARKLE)
         piece2 = Piece(color=COLORS.RED, shape=SHAPES.SQUARE)
@@ -77,19 +77,39 @@ class GameBoardTest(TestCase):
         piece13 = Piece(color=COLORS.MAGENTA, shape=SHAPES.TRIANGLE)
         piece14 = Piece(color=COLORS.MAGENTA, shape=SHAPES.DIAMOND)
 
+        board.start_turn()
         board.play(piece1)
         board.play(piece2, x=1, y=2)
         board.play(piece3, x=1, y=3)
+
+        self.assertEqual(3, len(board._plays))
+        self.assertEqual([(1, 1), (1, 2), (1, 3)], board._plays)
+
+        board.end_turn()
+
+        board.start_turn()
         board.play(piece5, x=2, y=2)
         board.play(piece6, x=3, y=2)
         board.play(piece7, x=4, y=2)
         board.play(piece8, x=0, y=2)
         board.play(piece9, x=0, y=2)
+
+        self.assertEqual(5, len(board._plays))
+        self.assertEqual([(4, 2), (5, 2), (6, 2), (2, 2), (1, 2)], board._plays)
+
+        board.end_turn()
+
+        board.start_turn()
         board.play(piece10, x=1, y=1)
         board.play(piece11, x=1, y=0)
         board.play(piece12, x=1, y=0)
         board.play(piece13, x=1, y=0)
         board.play(piece14, x=1, y=0)
+
+        self.assertEqual(5, len(board._plays))
+        self.assertEqual([(1, 5), (1, 4), (1, 3), (1, 2), (1, 1)], board._plays)
+
+        board.end_turn()
 
         expected_board = [
             [None, None, None, None, None, None, None, None, ],
@@ -103,7 +123,7 @@ class GameBoardTest(TestCase):
             [None, None, None, None, None, None, None, None, ],
         ]
 
-        self.assertEqual(expected_board, board._board)
+        self.assertEqual(expected_board, board._saved_board)
 
     def test_raises_placement_error_when_placing_on_edge_of_board(self):
         board = GameBoard()
