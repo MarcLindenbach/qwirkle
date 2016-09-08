@@ -220,4 +220,29 @@ class GameBoardTest(TestCase):
         self.assertEqual(14, board.score())
         board.end_turn()
 
+    def test_valid_plays(self):
+        board = GameBoard()
+        piece1 = Piece(color=COLORS.RED, shape=SHAPES.SPARKLE)
+        piece2 = Piece(color=COLORS.RED, shape=SHAPES.SQUARE)
+        piece3 = Piece(color=COLORS.RED, shape=SHAPES.CIRCLE)
+        piece4 = Piece(color=COLORS.GREEN, shape=SHAPES.SQUARE)
+        piece5 = Piece(color=COLORS.BLUE, shape=SHAPES.SQUARE)
+        piece6 = Piece(color=COLORS.CYAN, shape=SHAPES.SQUARE)
 
+        board.start_turn()
+        board.play(piece1)
+        board.play(piece2, x=1, y=2)
+        board.play(piece3, x=1, y=3)
+        board.end_turn()
+
+        board.start_turn()
+        board.play(piece4, x=2, y=2)
+        self.assertEqual([(2, 1), (0, 2), (3, 2), (2, 3)], board.valid_plays())
+        board.play(piece5, x=3, y=2)
+        self.assertEqual([(0, 2), (4, 2)], board.valid_plays())
+        board.play(piece6, x=4, y=2)
+        self.assertEqual([(0, 2), (5, 2)], board.valid_plays())
+        board.end_turn()
+
+        self.assertEqual([(1, 0), (0, 1), (2, 1), (3, 1), (4, 1), (0, 2),
+                          (5, 2), (0, 3), (2, 3), (3, 3), (4, 3), (1, 4)], board.valid_plays())

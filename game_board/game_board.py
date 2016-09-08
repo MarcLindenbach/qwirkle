@@ -22,6 +22,12 @@ class GameBoard:
 
     def valid_plays(self):
         """Returns the valid plays"""
+        valid_plays = []
+        for y in range(len(self._board)):
+            for x in range(len(self._board[y])):
+                if self._is_play_valid(None, x, y):
+                    valid_plays.append((x, y))
+        return valid_plays
 
     def get_board(self):
         """Return the current board with current moves"""
@@ -31,9 +37,9 @@ class GameBoard:
         """Play a tile"""
         if len(self._board) == 0:
             self._board = [[None] * 3 for i in range(3)]
-
-        if not self._is_play_valid(piece, x, y):
-            raise InvalidPlayException()
+        else:
+            if not self._is_play_valid(piece, x, y):
+                raise InvalidPlayException()
 
         self._board[y][x] = piece
         self._plays.append((x, y))
@@ -117,6 +123,8 @@ class GameBoard:
         """Validates a move is within the board, not on the corners, not
            replacing a existing piece, adjacent to an existing tile and valid in
            its row/column"""
+
+        # Make sure the placement is not on a corner and is inside the board
         if x < 0 or x >= len(self._board[0]):
             return False
         if y < 0 or y >= len(self._board):
@@ -130,8 +138,68 @@ class GameBoard:
         if x == len(self._board[0]) - 1 and y == 0:
             return False
 
+        # Make sure the placement is not already taken
         if self._board[y][x] is not None:
             return False
+
+        # Make sure the placement has at least one adjacent placement
+        adjacent_checks = []
+        if y - 1 >= 0:
+            adjacent_checks.append((self._board[y - 1][x] is None))
+        if y + 1 < len(self._board):
+            adjacent_checks.append((self._board[y + 1][x] is None))
+        if x - 1 >= 0:
+            adjacent_checks.append((self._board[y][x - 1] is None))
+        if x + 1 < len(self._board[y]):
+            adjacent_checks.append((self._board[y][x + 1] is None))
+
+        if all(adjacent_checks):
+            return False
+
+        # Validate the play connects to an existing play
+        if len(self._plays) > 0:
+            check_horizontal = True
+            check_vertical = True
+            if len(self._plays) > 1:
+                if self._plays[0][0] == self._plays[1][0]:
+                    check_horizontal = False
+                if self._plays[0][1] == self._plays[1][1]:
+                    check_vertical = False
+
+            in_plays = False
+
+            if check_horizontal:
+                t_x = x
+                while t_x - 1 >= 0 and self._board[y][t_x - 1] is not None:
+                    t_x -= 1
+                    if (t_x, y) in self._plays:
+                        in_plays = True
+
+                t_x = x
+                while t_x + 1 < len(self._board[y]) and self._board[y][t_x + 1] is not None:
+                    t_x += 1
+                    if (t_x, y) in self._plays:
+                        in_plays = True
+
+            if check_vertical:
+                t_y = y
+                while t_y - 1 >= 0 and self._board[t_y - 1][x] is not None:
+                    t_y -= 1
+                    if (x, t_y) in self._plays:
+                        in_plays = True
+
+                t_y = y
+                while t_y + 1 < len(self._board) and self._board[t_y + 1][x] is not None:
+                    t_y += 1
+                    if (x, t_y) in self._plays:
+                        in_plays = True
+
+            if not in_plays:
+                return False
+
+        # Don't test for piece shape/color if no piece provided
+        if piece is None:
+            return True
 
         # Get & Verify all the tiles adjacent horizontally
         row = [piece]
@@ -218,12 +286,15 @@ class GameBoard:
                 self._board[i] += [None]
 
     def _print_board(self):
+        valid_plays = self.valid_plays()
         for y in range(len(self._board)):
             line = ''
             for x in range(len(self._board[y])):
                 if self._board[y][x] is not None:
                     line += colored(self._board[y][x].shape, self._board[y][x].color)
+                elif (x, y) in valid_plays:
+                    line += colored('░', 'grey', 'on_white')
                 else:
-                    line += '░'
+                    line += colored('░', 'grey')
 
             print(line)
