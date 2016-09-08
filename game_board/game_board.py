@@ -152,7 +152,7 @@ class GameBoard:
         lines.insert(0, line)
 
         for i in range(0, len(lines)):
-            i_display = str(i).zfill(2) if i > 0 else ' '
+            i_display = str(i).zfill(2) if i > 0 else '  '
             print(i_display, lines[i])
 
     @staticmethod
