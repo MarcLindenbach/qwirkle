@@ -19,7 +19,6 @@ class Player:
     def play_turn(self, board):
         tiles = self._tiles.copy()
         while True:
-            board.print_board()
             self.print_tiles(tiles)
             print('Options')
             print(' "r"  to reset board')
@@ -33,6 +32,7 @@ class Player:
             if choice == 'r':
                 board.reset_turn()
                 tiles = self._tiles.copy()
+                board.print_board()
                 continue
 
             if choice == 'f':
@@ -57,6 +57,8 @@ class Player:
                 tiles.pop(tile_index)
             except InvalidPlayException:
                 print(colored('Invalid Play!', 'red'))
+
+            board.print_board()
 
         self._tiles = tiles.copy()
 

@@ -1,5 +1,6 @@
 from game_board import GameBoard, Piece, SHAPES, COLORS, InvalidPlayException
 from player import Player
+from bots import GreedyBot
 
 
 class QwirkleGame:
@@ -15,12 +16,12 @@ class QwirkleGame:
 
         print('Qwirkle Time!')
 
-        self._players = [Player('Player 1'), Player('Player 2')]
+        self._players = [Player('Player 1'), GreedyBot('Player 2')]
 
         current_player = 0
         while True:
-            print('%s Turn!', self._players[current_player].name())
-
+            print('%s Turn!' % self._players[current_player].name())
+            self._board.print_board()
             self._players[current_player].pick_tiles(self._bag_of_tiles)
             self._board.start_turn()
             self._players[current_player].play_turn(self._board)
@@ -35,7 +36,7 @@ class QwirkleGame:
                 print('%s - %i' % (self._players[i].name(), self._players[i].score()))
 
             if self._players[current_player].has_no_tiles():
-                break;
+                break
 
             current_player += 1
             if current_player >= len(self._players):

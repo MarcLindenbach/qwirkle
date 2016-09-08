@@ -21,6 +21,10 @@ class GameBoard:
     def valid_plays(self):
         """Returns the valid plays"""
         valid_plays = []
+
+        if not self._board:
+            return [(0, 0)]
+
         for y in range(len(self._board)):
             for x in range(len(self._board[y])):
                 if self._is_play_valid(None, x, y):
@@ -30,6 +34,9 @@ class GameBoard:
     def get_board(self):
         """Return the current board with current moves"""
         return self._board
+
+    def get_plays(self):
+        return self._plays
 
     def play(self, piece, x=1, y=1):
         """Play a tile"""
@@ -42,7 +49,7 @@ class GameBoard:
                 raise InvalidPlayException()
 
         self._board[y][x] = piece
-        self._plays.append((x, y))
+        self._plays.append((x, y, piece))
         self._pad_board()
 
     def score(self):
@@ -55,7 +62,7 @@ class GameBoard:
         scored_vertically = []
 
         for play in self._plays:
-            x, y = play
+            x, y, piece = play
 
             min_x = x
             while min_x - 1 >= 0 and self._board[y][min_x - 1] is not None:
@@ -115,10 +122,10 @@ class GameBoard:
 
     def reset_turn(self):
         """Reset the board to the way it was at the beginning of the turn"""
-        for (x, y) in self._plays:
+        for (x, y, tile) in self._plays:
             self._board[y][x] = None
 
-        if len(self._board) == 3:
+        if all([self._board[y][x] is None for x in range(len(self._board[y])) for y in range(len(self._board))]):
             self._board = []
 
         self._plays = []
@@ -196,13 +203,14 @@ class GameBoard:
             return False
 
         # Validate the play connects to an existing play
-        if len(self._plays) > 0:
+        plays = [(play[0], play[1]) for play in self._plays]
+        if len(plays) > 0:
             check_horizontal = True
             check_vertical = True
-            if len(self._plays) > 1:
-                if self._plays[0][0] == self._plays[1][0]:
+            if len(plays) > 1:
+                if plays[0][0] == plays[1][0]:
                     check_horizontal = False
-                if self._plays[0][1] == self._plays[1][1]:
+                if plays[0][1] == plays[1][1]:
                     check_vertical = False
 
             in_plays = False
@@ -211,26 +219,26 @@ class GameBoard:
                 t_x = x
                 while t_x - 1 >= 0 and self._board[y][t_x - 1] is not None:
                     t_x -= 1
-                    if (t_x, y) in self._plays:
+                    if (t_x, y) in plays:
                         in_plays = True
 
                 t_x = x
                 while t_x + 1 < len(self._board[y]) and self._board[y][t_x + 1] is not None:
                     t_x += 1
-                    if (t_x, y) in self._plays:
+                    if (t_x, y) in plays:
                         in_plays = True
 
             if check_vertical:
                 t_y = y
                 while t_y - 1 >= 0 and self._board[t_y - 1][x] is not None:
                     t_y -= 1
-                    if (x, t_y) in self._plays:
+                    if (x, t_y) in plays:
                         in_plays = True
 
                 t_y = y
                 while t_y + 1 < len(self._board) and self._board[t_y + 1][x] is not None:
                     t_y += 1
-                    if (x, t_y) in self._plays:
+                    if (x, t_y) in plays:
                         in_plays = True
 
             if not in_plays:
@@ -305,7 +313,7 @@ class GameBoard:
         # Check for top padding
         if any(self._board[0][i] is not None for i in range(len(self._board[0]))):
             self._board.insert(0, [None] * (len(self._board[0])))
-            self._plays = [(play[0], play[1]+1) for play in self._plays]
+            self._plays = [(play[0], play[1]+1, play[2]) for play in self._plays]
 
         # Check for bottom padding
         bottom = len(self._board) - 1
@@ -316,7 +324,7 @@ class GameBoard:
         if any(self._board[i][0] is not None for i in range(len(self._board))):
             for i in range(len(self._board)):
                 self._board[i].insert(0, None)
-            self._plays = [(play[0] + 1, play[1]) for play in self._plays]
+            self._plays = [(play[0] + 1, play[1], play[2]) for play in self._plays]
 
         # Right padding
         right = len(self._board[0]) - 1
