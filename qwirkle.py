@@ -34,9 +34,6 @@ class QwirkleGame:
 
             if score == 0:
                 print('%s is exchanging tiles...' % self._players[current_player].name())
-                if len(self._bag_of_tiles) == 0:
-                    break
-
                 self._bag_of_tiles += self._players[current_player].get_tiles()
                 self._players[current_player].clear_tiles()
 

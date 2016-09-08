@@ -77,7 +77,7 @@ class Player:
         self._score += points
 
     def has_no_tiles(self):
-        return self._tiles == 0
+        return len(self._tiles) == 0
 
     def name(self):
         return self._name
