@@ -130,7 +130,7 @@ class GameBoard:
     def print_board(self):
         if len(self._board) == 0:
             print('  A')
-            print('1', colored('■', 'white'))
+            print('01', colored('■', 'white'))
             return
 
         valid_plays = self.valid_plays()
@@ -152,7 +152,7 @@ class GameBoard:
         lines.insert(0, line)
 
         for i in range(0, len(lines)):
-            i_display = i if i > 0 else ' '
+            i_display = str(i).zfill(2) if i > 0 else ' '
             print(i_display, lines[i])
 
     @staticmethod
