@@ -7,6 +7,7 @@ class GameBoard:
 
     def __init__(self):
         self._board = []
+        self._previous_board = []
         self._plays = []
 
     def reset_board(self):
@@ -17,6 +18,7 @@ class GameBoard:
     def start_turn(self):
         """Start a turn"""
         self._plays = []
+        self._previous_board = copy.deepcopy(self._board)
 
     def valid_plays(self):
         """Returns the valid plays"""
@@ -122,12 +124,7 @@ class GameBoard:
 
     def reset_turn(self):
         """Reset the board to the way it was at the beginning of the turn"""
-        for (x, y, tile) in self._plays:
-            self._board[y][x] = None
-
-        if all([self._board[y][x] is None for x in range(len(self._board[y])) for y in range(len(self._board))]):
-            self._board = []
-
+        self._board = copy.deepcopy(self._previous_board)
         self._plays = []
 
     def print_board(self):

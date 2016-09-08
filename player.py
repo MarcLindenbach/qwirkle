@@ -81,3 +81,10 @@ class Player:
 
     def name(self):
         return self._name
+
+    def get_tiles(self):
+        return self._tiles
+
+    def clear_tiles(self):
+        self._tiles = []
+

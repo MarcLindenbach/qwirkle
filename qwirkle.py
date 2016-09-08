@@ -25,11 +25,21 @@ class QwirkleGame:
             self._players[current_player].pick_tiles(self._bag_of_tiles)
             self._board.start_turn()
             self._players[current_player].play_turn(self._board)
-            self._players[current_player].add_points(self._board.score())
 
-            print('%s got %i points!' % (self._players[current_player].name(), self._board.score()))
+            score = self._board.score()
+            self._players[current_player].add_points(score)
 
+            print('%s got %i points!' % (self._players[current_player].name(), score))
             self._board.end_turn()
+
+            if score == 0:
+                print('%s is exchanging tiles...' % self._players[current_player].name())
+                if len(self._bag_of_tiles) == 0:
+                    break
+
+                self._bag_of_tiles += self._players[current_player].get_tiles()
+                self._players[current_player].clear_tiles()
+
             self._players[current_player].pick_tiles(self._bag_of_tiles)
 
             for i in range(len(self._players)):
