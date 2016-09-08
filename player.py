@@ -22,7 +22,7 @@ class Player:
             self.print_tiles(tiles)
             print('  Options')
             print('   "r"  to reset board')
-            print('   "p# @#" to play a tile, where # is that tile, @ is the letter coord and # is the numeric coord')
+            print('   "t# @#" to play a tile, where # is that tile, @ is the letter coord and # is the numeric coord')
             print('   "f" to finish turn\n')
             choice = input('--> ')
             print('\n')
@@ -39,7 +39,7 @@ class Player:
             if choice == 'f':
                 break
 
-            if choice[0] != 'p':
+            if choice[0] != 't':
                 continue
 
             try:
@@ -51,7 +51,7 @@ class Player:
             if tile_index >= len(tiles):
                 continue
 
-            x, y = board.coord_to_position(choice[3:])
+            x, y = board.coord_to_position(choice[3:].upper())
 
             try:
                 board.play(tiles[tile_index], x, y)
