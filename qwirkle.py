@@ -1,6 +1,6 @@
 from game_board import GameBoard, Piece, SHAPES, COLORS, InvalidPlayException
 from player import Player
-from bots import GreedyBot
+from bots import GreedyBot, SingleGreedyBot
 
 
 class QwirkleGame:
@@ -9,14 +9,24 @@ class QwirkleGame:
         self._players = []
         self._board = []
 
-    def main(self):
+    def main(self, players):
 
         self._board = GameBoard()
         self._generate_new_bag_of_tiles()
 
         print('Qwirkle Time!')
 
-        self._players = [GreedyBot('Player 1'), GreedyBot('Player 2')]
+        player_number = 1
+        for player in players:
+            if player == 'greedy_bot':
+                self._players.append(GreedyBot('Player %i' % player_number))
+            elif player == 'single_greedy_bot':
+                self._players.append(SingleGreedyBot('Player %i' % player_number))
+            elif player == 'human':
+                self._players.append(Player('Player %i' % player_number))
+            else:
+                raise ValueError('%s is an invalid player type' % player)
+            player_number += 1
 
         current_player = 0
         while True:
