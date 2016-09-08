@@ -19,12 +19,20 @@ class QwirkleGame:
 
         current_player = 0
         while True:
+            print('%s Turn!', self._players[current_player].name())
+
             self._players[current_player].pick_tiles(self._bag_of_tiles)
             self._board.start_turn()
             self._players[current_player].play_turn(self._board)
             self._players[current_player].add_points(self._board.score())
+
+            print('%s got %i points!' % (self._players[current_player].name(), self._board.score()))
+
             self._board.end_turn()
             self._players[current_player].pick_tiles(self._bag_of_tiles)
+
+            for i in range(len(self._players)):
+                print('%s - %i' % (self._players[i].name(), self._players[i].score()))
 
             if self._players[current_player].has_no_tiles():
                 break;

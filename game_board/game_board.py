@@ -1,23 +1,21 @@
 from termcolor import colored
-from game_board.invalid_play import InvalidPlayException
+import copy
+from game_board.exceptions import InvalidPlayException
 
 
 class GameBoard:
 
     def __init__(self):
         self._board = []
-        self._saved_board = []
         self._plays = []
 
     def reset_board(self):
         """Clear the current board"""
         self._board = []
-        self._saved_board = []
         self._plays = []
 
     def start_turn(self):
         """Start a turn"""
-        self._board = self._saved_board.copy()
         self._plays = []
 
     def valid_plays(self):
@@ -34,10 +32,11 @@ class GameBoard:
         return self._board
 
     def play(self, piece, x=1, y=1):
-        print(colored(piece.shape, piece.color), x, y)
         """Play a tile"""
         if len(self._board) == 0:
             self._board = [[None] * 3 for i in range(3)]
+            x = 1
+            y = 1
         else:
             if not self._is_play_valid(piece, x, y):
                 raise InvalidPlayException()
@@ -112,12 +111,16 @@ class GameBoard:
 
     def end_turn(self):
         """End the current turn"""
-        self._saved_board = self._board.copy()
         self._plays = []
 
     def reset_turn(self):
         """Reset the board to the way it was at the beginning of the turn"""
-        self._board = self._saved_board.copy()
+        for (x, y) in self._plays:
+            self._board[y][x] = None
+
+        if len(self._board) == 3:
+            self._board = []
+
         self._plays = []
 
     def print_board(self):
@@ -134,7 +137,7 @@ class GameBoard:
                 if self._board[y][x] is not None:
                     line += colored(self._board[y][x].shape, self._board[y][x].color) + ' '
                 elif (x, y) in valid_plays:
-                    line += colored('■', 'white') + ' '
+                    line += colored('■', 'white', attrs=['blink']) + ' '
                 else:
                     line += '  '
 
@@ -151,7 +154,7 @@ class GameBoard:
     @staticmethod
     def coord_to_position(coord):
         x_coord = ord(coord[0]) - 65
-        y_coord = int(coord[1:])
+        y_coord = int(coord[1:]) - 1
 
         return x_coord, y_coord
 

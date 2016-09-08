@@ -1,5 +1,6 @@
 from random import Random
 from termcolor import colored
+from game_board import InvalidPlayException
 
 
 class Player:
@@ -40,12 +41,24 @@ class Player:
             if choice[0] != 'p':
                 continue
 
-            tile_index = int(choice[1]) - 1
+            try:
+                tile_index = int(choice[1]) - 1
+            except ValueError:
+                print(colored('Invalid Tile!', 'red'))
+                continue
+
             if tile_index >= len(tiles):
                 continue
 
             x, y = board.coord_to_position(choice[3:])
-            board.play(tiles.pop(tile_index), x, y)
+
+            try:
+                board.play(tiles[tile_index], x, y)
+                tiles.pop(tile_index)
+            except InvalidPlayException:
+                print(colored('Invalid Play!', 'red'))
+
+        self._tiles = tiles.copy()
 
     @staticmethod
     def print_tiles(tiles):
