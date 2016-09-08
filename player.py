@@ -20,11 +20,12 @@ class Player:
         tiles = self._tiles.copy()
         while True:
             self.print_tiles(tiles)
-            print('Options')
-            print(' "r"  to reset board')
-            print(' "p# @#" to play a tile, where # is that tile, @ is the letter coord and # is the numeric coord')
-            print(' "f" to finish turn')
+            print('  Options')
+            print('   "r"  to reset board')
+            print('   "p# @#" to play a tile, where # is that tile, @ is the letter coord and # is the numeric coord')
+            print('   "f" to finish turn\n')
             choice = input('--> ')
+            print('\n')
 
             if len(choice) == 0:
                 continue
@@ -67,8 +68,8 @@ class Player:
         tiles_output = ''
         for tile in tiles:
             tiles_output += colored(tile.shape, tile.color) + ' '
-        print('Your Tiles: %s' % tiles_output)
-        print('            1 2 3 4 5 6')
+        print('\n  Your Tiles: %s' % tiles_output)
+        print('              1 2 3 4 5 6\n')
 
     def score(self):
         return self._score

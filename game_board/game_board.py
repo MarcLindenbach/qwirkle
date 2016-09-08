@@ -150,10 +150,11 @@ class GameBoard:
         # add in the top coord line
         line = ''.join([chr(65 + i) + ' ' for i in range(len(self._board[0]))])
         lines.insert(0, line)
+        lines.append(line)
 
         for i in range(0, len(lines)):
-            i_display = str(i).zfill(2) if i > 0 else '  '
-            print(i_display, lines[i])
+            i_display = str(i).zfill(2) if 0 < i < len(lines) - 1 else '  '
+            print(i_display, lines[i], i_display)
 
     @staticmethod
     def coord_to_position(coord):
