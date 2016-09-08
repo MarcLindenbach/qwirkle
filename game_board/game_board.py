@@ -23,7 +23,7 @@ class GameBoard:
         valid_plays = []
 
         if not self._board:
-            return [(0, 0)]
+            return [(1, 1)]
 
         for y in range(len(self._board)):
             for x in range(len(self._board[y])):

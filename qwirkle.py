@@ -16,7 +16,7 @@ class QwirkleGame:
 
         print('Qwirkle Time!')
 
-        self._players = [Player('Player 1'), GreedyBot('Player 2')]
+        self._players = [GreedyBot('Player 1'), GreedyBot('Player 2')]
 
         current_player = 0
         while True:

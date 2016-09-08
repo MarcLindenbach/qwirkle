@@ -40,7 +40,9 @@ class GreedyBot(Player):
         best_play = max(plays, key=lambda p: p['score'])
 
         for (x, y, tile) in best_play['plays']:
+            print(tile, x, y)
             board.play(tile, x, y)
+            board.print_board()
             self._tiles.pop(self._tiles.index(tile))
 
         self._tiles = tiles.copy()
