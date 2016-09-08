@@ -34,6 +34,7 @@ class GameBoard:
         return self._board
 
     def play(self, piece, x=1, y=1):
+        print(colored(piece.shape, piece.color), x, y)
         """Play a tile"""
         if len(self._board) == 0:
             self._board = [[None] * 3 for i in range(3)]
@@ -120,22 +121,27 @@ class GameBoard:
         self._plays = []
 
     def print_board(self):
+        if len(self._board) == 0:
+            print('  A')
+            print('1', colored('■', 'white'))
+            return
+
         valid_plays = self.valid_plays()
         lines = []
         for y in range(len(self._board)):
             line = ''
             for x in range(len(self._board[y])):
                 if self._board[y][x] is not None:
-                    line += colored(self._board[y][x].shape, self._board[y][x].color)
+                    line += colored(self._board[y][x].shape, self._board[y][x].color) + ' '
                 elif (x, y) in valid_plays:
-                    line += colored('░', 'grey', 'on_white')
+                    line += colored('■', 'white') + ' '
                 else:
-                    line += colored('░', 'grey')
+                    line += '  '
 
             lines.append(line)
 
         # add in the top coord line
-        line = ''.join([chr(65 + i) for i in range(len(self._board[0]))])
+        line = ''.join([chr(65 + i) + ' ' for i in range(len(self._board[0]))])
         lines.insert(0, line)
 
         for i in range(0, len(lines)):
