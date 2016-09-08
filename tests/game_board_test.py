@@ -220,6 +220,8 @@ class GameBoardTest(TestCase):
         self.assertEqual(14, board.score())
         board.end_turn()
 
+        board.print_board()
+
     def test_valid_plays(self):
         board = GameBoard()
         piece1 = Piece(color=COLORS.RED, shape=SHAPES.SPARKLE)

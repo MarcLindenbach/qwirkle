@@ -119,6 +119,29 @@ class GameBoard:
         self._board = self._saved_board.copy()
         self._plays = []
 
+    def print_board(self):
+        valid_plays = self.valid_plays()
+        lines = []
+        for y in range(len(self._board)):
+            line = ''
+            for x in range(len(self._board[y])):
+                if self._board[y][x] is not None:
+                    line += colored(self._board[y][x].shape, self._board[y][x].color)
+                elif (x, y) in valid_plays:
+                    line += colored('░', 'grey', 'on_white')
+                else:
+                    line += colored('░', 'grey')
+
+            lines.append(line)
+
+        # add in the top coord line
+        line = ''.join([chr(65 + i) for i in range(len(self._board[0]))])
+        lines.insert(0, line)
+
+        for i in range(0, len(lines)):
+            i_display = i if i > 0 else ' '
+            print(i_display, lines[i])
+
     def _is_play_valid(self, piece, x, y):
         """Validates a move is within the board, not on the corners, not
            replacing a existing piece, adjacent to an existing tile and valid in
@@ -285,16 +308,3 @@ class GameBoard:
             for i in range(len(self._board)):
                 self._board[i] += [None]
 
-    def _print_board(self):
-        valid_plays = self.valid_plays()
-        for y in range(len(self._board)):
-            line = ''
-            for x in range(len(self._board[y])):
-                if self._board[y][x] is not None:
-                    line += colored(self._board[y][x].shape, self._board[y][x].color)
-                elif (x, y) in valid_plays:
-                    line += colored('░', 'grey', 'on_white')
-                else:
-                    line += colored('░', 'grey')
-
-            print(line)
