@@ -1,4 +1,4 @@
-from game_board import GameBoard, Piece, SHAPES, COLORS, InvalidPlayException
+from game_board import GameBoard, Piece, SHAPES, COLORS
 from player import Player
 from bots import GreedyBot, SingleGreedyBot
 

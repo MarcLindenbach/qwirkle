@@ -9,6 +9,7 @@ class GameBoard:
         self._board = []
         self._previous_board = []
         self._plays = []
+        self._last_plays = []
 
     def reset_board(self):
         """Clear the current board"""
@@ -51,7 +52,7 @@ class GameBoard:
                 raise InvalidPlayException()
 
         self._board[y][x] = piece
-        self._plays.append((x, y, piece))
+        self._plays.append((x, y))
         self._pad_board()
 
     def score(self):
@@ -64,7 +65,7 @@ class GameBoard:
         scored_vertically = []
 
         for play in self._plays:
-            x, y, piece = play
+            x, y = play
 
             min_x = x
             while min_x - 1 >= 0 and self._board[y][min_x - 1] is not None:
@@ -120,7 +121,9 @@ class GameBoard:
 
     def end_turn(self):
         """End the current turn"""
+        self._last_plays = self._plays[:]
         self._plays = []
+
 
     def reset_turn(self):
         """Reset the board to the way it was at the beginning of the turn"""
@@ -139,9 +142,12 @@ class GameBoard:
             line = ''
             for x in range(len(self._board[y])):
                 if self._board[y][x] is not None:
-                    line += colored(self._board[y][x].shape, self._board[y][x].color) + ' '
+                    if (x, y) in self._last_plays:
+                        line += colored(self._board[y][x].shape + ' ', self._board[y][x].color, 'on_white')
+                    else:
+                        line += colored(self._board[y][x].shape + ' ', self._board[y][x].color)
                 elif (x, y) in valid_plays and show_valid_placements:
-                    line += colored('■', 'white', attrs=['blink']) + ' '
+                    line += colored('☐', 'white') + ' '
                 else:
                     line += '  '
 
@@ -311,7 +317,8 @@ class GameBoard:
         # Check for top padding
         if any(self._board[0][i] is not None for i in range(len(self._board[0]))):
             self._board.insert(0, [None] * (len(self._board[0])))
-            self._plays = [(play[0], play[1]+1, play[2]) for play in self._plays]
+            self._plays = [(play[0], play[1]+1) for play in self._plays]
+            self._last_plays = [(play[0], play[1]+1) for play in self._last_plays]
 
         # Check for bottom padding
         bottom = len(self._board) - 1
@@ -322,7 +329,8 @@ class GameBoard:
         if any(self._board[i][0] is not None for i in range(len(self._board))):
             for i in range(len(self._board)):
                 self._board[i].insert(0, None)
-            self._plays = [(play[0] + 1, play[1], play[2]) for play in self._plays]
+            self._plays = [(play[0] + 1, play[1]) for play in self._plays]
+            self._last_plays = [(play[0] + 1, play[1]) for play in self._last_plays]
 
         # Right padding
         right = len(self._board[0]) - 1
