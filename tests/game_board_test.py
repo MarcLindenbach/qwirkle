@@ -158,3 +158,66 @@ class GameBoardTest(TestCase):
 
         with self.assertRaises(InvalidPlayException):
             board.play(green_triangle, x=1, y=3)
+
+    def test_score_straight_line(self):
+        board = GameBoard()
+        piece1 = Piece(color=COLORS.RED, shape=SHAPES.SPARKLE)
+        piece2 = Piece(color=COLORS.RED, shape=SHAPES.SQUARE)
+        piece3 = Piece(color=COLORS.RED, shape=SHAPES.CIRCLE)
+
+        board.start_turn()
+        board.play(piece1)
+        board.play(piece2, x=1, y=2)
+        board.play(piece3, x=1, y=3)
+
+        self.assertEqual(3, board.score())
+
+        board.end_turn()
+        self.assertEqual(0, board.score())
+
+    def test_complex_score(self):
+        board = GameBoard()
+        piece1 = Piece(color=COLORS.RED, shape=SHAPES.SPARKLE)
+        piece2 = Piece(color=COLORS.RED, shape=SHAPES.SQUARE)
+        piece3 = Piece(color=COLORS.RED, shape=SHAPES.CIRCLE)
+        piece4 = Piece(color=COLORS.GREEN, shape=SHAPES.SQUARE)
+        piece5 = Piece(color=COLORS.BLUE, shape=SHAPES.SQUARE)
+        piece6 = Piece(color=COLORS.CYAN, shape=SHAPES.SQUARE)
+        piece7 = Piece(color=COLORS.GREEN, shape=SHAPES.CIRCLE)
+        piece8 = Piece(color=COLORS.BLUE, shape=SHAPES.CIRCLE)
+        piece9 = Piece(color=COLORS.CYAN, shape=SHAPES.CIRCLE)
+        piece10 = Piece(color=COLORS.GREEN, shape=SHAPES.SPARKLE)
+        piece11 = Piece(color=COLORS.GREEN, shape=SHAPES.TRIANGLE)
+        piece12 = Piece(color=COLORS.GREEN, shape=SHAPES.DIAMOND)
+        piece13 = Piece(color=COLORS.GREEN, shape=SHAPES.STAR)
+
+        board.start_turn()
+        board.play(piece1)
+        board.play(piece2, x=1, y=2)
+        board.play(piece3, x=1, y=3)
+        self.assertEqual(3, board.score())
+        board.end_turn()
+
+        board.start_turn()
+        board.play(piece4, x=2, y=2)
+        board.play(piece5, x=3, y=2)
+        board.play(piece6, x=4, y=2)
+        self.assertEqual(4, board.score())
+        board.end_turn()
+
+        board.start_turn()
+        board.play(piece7, x=2, y=3)
+        board.play(piece8, x=3, y=3)
+        board.play(piece9, x=4, y=3)
+        self.assertEqual(10, board.score())
+        board.end_turn()
+
+        board.start_turn()
+        board.play(piece10, x=2, y=1)
+        board.play(piece11, x=2, y=4)
+        board.play(piece12, x=2, y=5)
+        board.play(piece13, x=2, y=6)
+        self.assertEqual(14, board.score())
+        board.end_turn()
+
+

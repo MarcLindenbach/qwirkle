@@ -11,12 +11,21 @@ class GameBoard:
 
     def reset_board(self):
         """Clear the current board"""
-        pass
+        self._board = []
+        self._saved_board = []
+        self._plays = []
 
     def start_turn(self):
         """Start a turn"""
         self._board = self._saved_board.copy()
         self._plays = []
+
+    def valid_plays(self):
+        """Returns the valid plays"""
+
+    def get_board(self):
+        """Return the current board with current moves"""
+        return self._board
 
     def play(self, piece, x=1, y=1):
         """Play a tile"""
@@ -27,12 +36,72 @@ class GameBoard:
             raise InvalidPlayException()
 
         self._board[y][x] = piece
-        self._plays.append((x,y))
+        self._plays.append((x, y))
         self._pad_board()
 
     def score(self):
         """Return the score for the current turn"""
-        pass
+        if len(self._plays) == 0:
+            return 0
+
+        score = 0
+        scored_horizontally = []
+        scored_vertically = []
+
+        for play in self._plays:
+            x, y = play
+
+            min_x = x
+            while min_x - 1 >= 0 and self._board[y][min_x - 1] is not None:
+                min_x -= 1
+
+            max_x = x
+            while max_x + 1 < len(self._board[y]) and self._board[y][max_x + 1] is not None:
+                max_x += 1
+
+            if min_x != max_x:
+                qwirkle_count = 0
+                for t_x in range(min_x, max_x + 1):
+                    if (t_x, y) not in scored_horizontally:
+                        score += 1
+                        qwirkle_count += 1
+                        scored_horizontally.append((t_x, y))
+
+                        if (x, y) not in scored_horizontally:
+                            score += 1
+                            qwirkle_count += 1
+                            scored_horizontally.append((x, y))
+                    t_x += 1
+
+                if qwirkle_count == 6:
+                    score += 6
+
+            min_y = y
+            while min_y - 1 >= 0 and self._board[min_y - 1][x] is not None:
+                min_y -= 1
+
+            max_y = y
+            while max_y + 1 < len(self._board) and self._board[max_y + 1][x] is not None:
+                max_y += 1
+
+            if min_y != max_y:
+                qwirkle_count = 0
+                for t_y in range(min_y, max_y + 1):
+                    if (x, t_y) not in scored_vertically:
+                        score += 1
+                        qwirkle_count += 1
+                        scored_vertically.append((x, t_y))
+
+                        if (x, y) not in scored_vertically:
+                            score += 1
+                            qwirkle_count += 1
+                            scored_vertically.append((x, y))
+                    t_y += 1
+
+                if qwirkle_count == 6:
+                    score += 6
+
+        return score
 
     def end_turn(self):
         """End the current turn"""
