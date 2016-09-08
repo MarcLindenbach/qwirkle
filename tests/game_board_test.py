@@ -248,3 +248,9 @@ class GameBoardTest(TestCase):
 
         self.assertEqual([(1, 0), (0, 1), (2, 1), (3, 1), (4, 1), (0, 2),
                           (5, 2), (0, 3), (2, 3), (3, 3), (4, 3), (1, 4)], board.valid_plays())
+
+    def test_coord_to_position(self):
+        board = GameBoard()
+
+        self.assertEqual((0, 22), board.coord_to_position('A22'))
+        self.assertEqual((25, 103), board.coord_to_position('Z103'))

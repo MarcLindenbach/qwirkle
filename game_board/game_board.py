@@ -142,6 +142,13 @@ class GameBoard:
             i_display = i if i > 0 else ' '
             print(i_display, lines[i])
 
+    @staticmethod
+    def coord_to_position(coord):
+        x_coord = ord(coord[0]) - 65
+        y_coord = int(coord[1:])
+
+        return x_coord, y_coord
+
     def _is_play_valid(self, piece, x, y):
         """Validates a move is within the board, not on the corners, not
            replacing a existing piece, adjacent to an existing tile and valid in
