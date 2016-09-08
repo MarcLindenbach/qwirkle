@@ -1,8 +1,14 @@
 from game_board import GameBoard, Piece, SHAPES, COLORS, InvalidPlayException
+from player import Player
+
 
 class QwirkleGame:
     def __init__(self):
         self._bag_of_tiles = []
+        self._players = []
+
+    def main(self):
+        pass
 
     def _generate_new_bag_of_tiles(self):
         self._bag_of_tiles = []
