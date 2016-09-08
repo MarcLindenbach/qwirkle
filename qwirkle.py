@@ -40,7 +40,7 @@ class QwirkleGame:
                 print(message)
             print('\n  It is %ss turn\n' % self._players[current_player].name())
 
-            self._board.print_board()
+            self._board.print_board(show_valid_placements=False)
             self._players[current_player].pick_tiles(self._bag_of_tiles)
             self._board.start_turn()
             self._players[current_player].play_turn(self._board)

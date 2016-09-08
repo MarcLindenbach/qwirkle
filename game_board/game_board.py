@@ -127,7 +127,7 @@ class GameBoard:
         self._board = copy.deepcopy(self._previous_board)
         self._plays = []
 
-    def print_board(self):
+    def print_board(self, show_valid_placements=True):
         if len(self._board) == 0:
             print('  A')
             print('01', colored('■', 'white'))
@@ -140,7 +140,7 @@ class GameBoard:
             for x in range(len(self._board[y])):
                 if self._board[y][x] is not None:
                     line += colored(self._board[y][x].shape, self._board[y][x].color) + ' '
-                elif (x, y) in valid_plays:
+                elif (x, y) in valid_plays and show_valid_placements:
                     line += colored('■', 'white', attrs=['blink']) + ' '
                 else:
                     line += '  '
